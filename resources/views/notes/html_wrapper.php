@@ -7,7 +7,7 @@
 
 </head>
 <body>
-    
+    <h1> Leave your notes here</h1>
     <?= $content ?>
 
 </body>
