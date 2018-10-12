@@ -81,7 +81,7 @@ class SongsController extends Controller
         
         $song["youtube_url"] = 'http://www.youtube.com/watch?v=' . $song["youtube_link"];
         
-        $song["youtube_embed"] = '<iframe width="560" height="315" src="https://www.youtube.com/embed/' . $song["youtube_link"] . '" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>"';
+        $song["youtube_embed"] = '<iframe width="560" height="315" src="https://www.youtube.com/embed/' . $song["youtube_link"] . '" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
 
         // save THE data if (TRUE)
         if ($request->input('id')) {
@@ -153,6 +153,30 @@ class SongsController extends Controller
             'content' => $form
         ]);
 
+    }
+
+    public function list() {
+        // retrieve all records from DB
+        $query = "
+            SELECT *
+            FROM `songs`
+            WHERE 1
+        ";
+
+        $songs = DB::select($query);
+        
+        for ($i = 0 ; $i < count($songs) ; $i++)
+        {
+        $song[] = (array)$songs[$i];
+        }
+
+        $list = view("jukebox.songs.list", [
+            "songs" => $song
+        ]);
+        
+        return view('jukebox/songs/html_wrapper', [
+            'content' => $list
+        ]);
     }
 
 }
