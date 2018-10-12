@@ -5,6 +5,9 @@ use DB;
 use Illuminate\Http\Request;        // to include Request Object -> methods()
 
 
+use DB;
+use Illuminate\Http\Request;
+
 class NotesController extends Controller
 {
     // CREATE NEW ENTRY TO DB
@@ -12,11 +15,11 @@ class NotesController extends Controller
     {
         // prepare empty ARRAY[] data for EACH NOTE IN THE DB
         $note = [
+            "id" => null,
             "title" => null,
-            "author" => null,
             "topic" => null,
             "text" => null,
-            "id" => null,
+            "author" => null
         ];
 
         // display the 'FROM VIEW' in the 'view' in POSITION [view('url', ['name_to_var' => DB[$row] ])]
@@ -30,8 +33,29 @@ class NotesController extends Controller
         ]);
     }
 
-    
-    // STORE THE DATA IN THE DB
+    public function edit(Request $request)
+    {
+        // retrieve the record from database
+        $id = $request->input('id');
+        $query = "
+            SELECT *
+            FROM `notes`
+            WHERE `id` = ?
+            LIMIT 1
+        ";
+        $notes = DB::select($query, [$id]);
+        $note = (array)$notes[0];
+
+        // display the form
+        $form = view('notes/edit', [
+            'note' => $note
+        ]);
+
+        return view('notes/html_wrapper', [
+            'content' => $form
+        ]);
+    }
+
     public function store(Request $request)
     {  
          // ({object_instance} -> input($_GET/$POST['id']))
@@ -58,17 +82,17 @@ class NotesController extends Controller
             // B) this is insert
             // prepare empty data
             $note = [
+                "id" => null,
                 "title" => null,
-                "author" => null,
                 "topic" => null,
                 "text" => null,
-                "id" => null
+                "author" => null
             ];
         }
 
-        // update the $note[$key]    with what was submitted
+        // update the $note with what was submitted
         foreach ($note as $key => $value) { // loop through data in $note
-            if ($request->has($key)) { // if there is something WITH THE SAME $KEY  in $_POST
+            if ($request->has($key)) { // if there is something with the same key in $_POST
                 $note[$key] = $request->input($key); // update the data in $note with it
             }
         }
@@ -77,11 +101,11 @@ class NotesController extends Controller
         if ($request->input('id')) {
             // update query
             $query = "
-                UPDATE `note`
-                SET `author' = ?,
-                    `title'  = ?,
-                    `topic' = ?,
-                    `text' = ?
+                UPDATE `notes`
+                SET `title`  = ?,
+                    `topic` = ?,
+                    `text` = ?,
+                    `author` = ?
                 WHERE `id` = ?
             ";
 
@@ -94,11 +118,12 @@ class NotesController extends Controller
 
             // update(array $column, $values to INSERT)
             DB::update($query, $values);
+            
         } else {
             // insert query
             $query = "
                 INSERT
-                INTO `note`
+                INTO `notes`
                 (`title`, `topic`, `text`, `author`)
                 VALUES
                 (?, ?, ?, ?)
@@ -116,32 +141,6 @@ class NotesController extends Controller
 
         // redirect
         return redirect('notes/edit?id=' . $note['id']);
-    }
-
-    // EDIT DATA IN THE DB
-    public function edit(Request $request)
-    {
-        // retrieve the record from database
-        $id = $request->input('id');
-        $query = "
-            SELECT *
-            FROM `note`
-            WHERE `id` = ?
-            LIMIT 1
-        ";
-
-        $notes = DB::select($query, [$id]);
-        $note = (array)$notes[0];
-
-        // display the form
-        $form = view('notes/edit', [
-            'note' => $note
-        ]);
-
-        return view('notes/html_wrapper', [
-            'content' => $form
-        ]);
-
     }
 
 }
