@@ -155,4 +155,28 @@ class SongsController extends Controller
 
     }
 
+    // DELETE  DATA FROM THE DB
+    public function delete(Request $request)
+    {
+        if($_POST['del']){
+        // retrieve the record from database
+        $id = $request->input('id');
+        $query = "
+            DELETE
+            FROM `songs`
+            WHERE `id` = ?
+        ";
+
+        DB::delete($query, [$id]);
+
+        return view('jukebox/songs/list', [
+            'content' => $form
+        ]);
+        }else{
+        return view('jukebox/songs/list', [
+            'content' => $form
+        ]);
+        }
+    }
+
 }

@@ -22,3 +22,5 @@ Route::post("/jukebox/songs/insert", "SongsController@store");
 
 Route::get("/jukebox/songs/edit", "SongsController@edit");
 Route::post("/jukebox/songs/edit", "SongsController@store");
+
+Route::post("/jukebox/songs/delete", "SongsController@delete");
