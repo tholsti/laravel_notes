@@ -143,6 +143,7 @@ class SongsController extends Controller
 
         $songs = DB::select($query, [$id]);
         $song = (array)$songs[0];
+        // dd($song);
 
         // display the form
         $form = view('jukebox/songs/edit', [
