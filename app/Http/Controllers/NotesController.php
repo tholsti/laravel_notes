@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use DB;
+use Illuminate\Http\Request;
+
 class NotesController extends Controller
 {
     public function create()
     {
         // prepare empty data
         $note = [
+            "id" => null,
             "title" => null,
-            "author" => null,
             "topic" => null,
             "text" => null,
-            "id" => null,
+            "author" => null
         ];
 
         // display the note
@@ -49,18 +52,18 @@ class NotesController extends Controller
             // this is insert
             // prepare empty data
             $note = [
+                "id" => null,
                 "title" => null,
-                "author" => null,
                 "topic" => null,
                 "text" => null,
-                "id" => null
+                "author" => null
             ];
         }
 
-        // update the $game with what was submitted
-        foreach ($note as $key => $value) { // loop through data in $game
+        // update the $note with what was submitted
+        foreach ($note as $key => $value) { // loop through data in $note
             if ($request->has($key)) { // if there is something with the same key in $_POST
-                $note[$key] = $request->input($key); // update the data in $game with it
+                $note[$key] = $request->input($key); // update the data in $note with it
             }
         }
 
@@ -68,22 +71,23 @@ class NotesController extends Controller
         if ($request->input('id')) {
             // update query
             $query = "
-                UPDATE `note`
+                UPDATE `notes`
                 SET `title'  = ?,
                     `topic' = ?,
-                    `text' = ?
-                    `author' = ?,
+                    `text' = ?,
+                    `author' = ?
                 WHERE `id` = ?
             ";
             $values = array_slice(array_values($note), 1); // all the pieces of $game except for the first ('id')
             $values[] = $note['id']; // append the id as the last item in $values (it is the last '?')
             // dd($values);
             DB::update($query, $values);
+            
         } else {
             // insert query
             $query = "
                 INSERT
-                INTO `note`
+                INTO `notes`
                 (`title`, `topic`, `text`, `author`)
                 VALUES
                 (?, ?, ?, ?)
@@ -100,6 +104,6 @@ class NotesController extends Controller
         session()->flash('success_message', 'Success! You have saved it!');
 
         // redirect
-        return redirect('nites/edit?id=' . $note['id']);
+        return redirect('notes/edit?id=' . $note['id']);
     }
 }
