@@ -200,7 +200,7 @@ class SongsController extends Controller
             {
                 $delete = view("jukebox/songs/delete");
                 return view('jukebox/songs/delete', [
-                'content' => $delete
+                    'content' => $delete
                 ]);
             }
 

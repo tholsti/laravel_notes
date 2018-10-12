@@ -27,3 +27,6 @@ Route::get("/jukebox/songs/list", "SongsController@list");
 
 Route::get("/jukebox/songs/delete", "SongsController@delete");
 Route::post("/jukebox/songs/delete", "SongsController@delete");
+
+Route::get("/", "JukeboxController@list");
+Route::get("/player", "JukeboxController@player");
