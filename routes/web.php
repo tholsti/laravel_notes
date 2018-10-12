@@ -23,8 +23,11 @@ Route::post("/jukebox/songs/insert", "SongsController@store");
 Route::get("/jukebox/songs/edit", "SongsController@edit");
 Route::post("/jukebox/songs/edit", "SongsController@store");
 
-<<<<<<< HEAD
 Route::post("/jukebox/songs/delete", "SongsController@delete");
-=======
+Route::get("/jukebox/songs/delete", "SongsController@delete");
+
 Route::get("/jukebox/songs/list", "SongsController@list");
->>>>>>> master
+
+Route::get("/", "JukeboxController@list");
+
+Route::get("/player", "JukeboxController@player");
