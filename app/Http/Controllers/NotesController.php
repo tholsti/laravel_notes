@@ -28,9 +28,27 @@ class NotesController extends Controller
         ]);
     }
 
-    public function edit()
+    public function edit(Request $request)
     {
+        // retrieve the record from database
+        $id = $request->input('id');
+        $query = "
+            SELECT *
+            FROM `notes`
+            WHERE `id` = ?
+            LIMIT 1
+        ";
+        $notes = DB::select($query, [$id]);
+        $note = (array)$notes[0];
 
+        // display the form
+        $form = view('notes/edit', [
+            'note' => $note
+        ]);
+
+        return view('notes/html_wrapper', [
+            'content' => $form
+        ]);
     }
 
     public function store(Request $request)
@@ -72,10 +90,10 @@ class NotesController extends Controller
             // update query
             $query = "
                 UPDATE `notes`
-                SET `title'  = ?,
-                    `topic' = ?,
-                    `text' = ?,
-                    `author' = ?
+                SET `title`  = ?,
+                    `topic` = ?,
+                    `text` = ?,
+                    `author` = ?
                 WHERE `id` = ?
             ";
             $values = array_slice(array_values($note), 1); // all the pieces of $game except for the first ('id')
