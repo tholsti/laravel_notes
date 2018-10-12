@@ -19,7 +19,7 @@ class SongsController extends Controller
             "genre" => null,
             "date_of_upload" => null,
             "youtube_url" => null,
-            "youtube_embed" => null,
+            "youtube_embed" => null
         ];
 
         // display the 'FROM VIEW' in the 'view' in POSITION [view('url', ['name_to_var' => DB[$row] ])]
@@ -60,14 +60,14 @@ class SongsController extends Controller
         } else {
             // B) this is insert
             // prepare empty data
-            $ = [
+            $query = [
                 "song_title" => null,
                 "artist" => null,
                 "youtube_link" => null,
-                "genre" => null
-                "date_of_upload" => null
-                "youtube_url" => null
-                "youtube_embed" => null
+                "genre" => null,
+                "date_of_upload" => null,
+                "youtube_url" => null,
+                "youtube_embed" => null,
                 "id" => null
             ];
         }
@@ -83,13 +83,13 @@ class SongsController extends Controller
         if ($request->input('id')) {
             // update query
             $query = "
-                UPDATE `note`
+                UPDATE `ongs`
                 SET `song_title' = ?,
                     `artist'  = ?,
                     `youtube_link' = ?,
-                    `genre' = ?
-                    `date_of_upload' = ?
-                    `youtube_url' = ?
+                    `genre' = ?,
+                    `date_of_upload' = ?,
+                    `youtube_url' = ?,
                     `youtube_embed' = ?
                 WHERE `id` = ?
             ";
