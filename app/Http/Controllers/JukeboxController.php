@@ -7,8 +7,7 @@ use DB;
 
 class JukeboxController extends Controller
 {
-    public function list() 
-    {
+    public function list() {
         // retrieve all records from DB
         $query = "
             SELECT *
@@ -23,13 +22,31 @@ class JukeboxController extends Controller
         $song[] = (array)$songs[$i];
         }
 
-        $list = view("jukebox/main", [
+        $list = view("jukebox.main", [
             "songs" => $song
         ]);
         
-        return view('jukebox/html_wrapper', [
+        return view('jukebox.html_wrapper', [
             'content' => $list
         ]);
-    
+    }
+
+    public function player(Request $request) {
+        $query = "
+            SELECT *
+            FROM `songs`
+            WHERE id = ?
+        ";
+        
+        $id = $request->input('id');
+        
+        $songs = DB::select($query, [$id]);
+        $song = (array)$songs[0];
+        // $player = (array)$songs[0];
+
+        return view ("jukebox.player", [
+            "embed" => $song
+        ]);
+            
     }
 }

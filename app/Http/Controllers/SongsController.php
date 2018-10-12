@@ -155,32 +155,7 @@ class SongsController extends Controller
 
     }
 
-    // DELETE  DATA FROM THE DB
-    public function delete(Request $request)
-    {
-
-        if($request->has('del')){
-            // retrieve the record from database
-            $id = $request->input('id');
-            $query = "
-                DELETE
-                FROM `songs`
-                WHERE `id` = ?
-            ";
-
-            DB::delete($query, [$id]);
-            return redirect('jukebox/songs/list'); 
-        
-        }else{
-            $delete = view('jukebox/songs/delete');
-            return view('jukebox/songs/delete', [
-            'content' => $delete
-            ]);
-        }
-    }
-
-    public function list() 
-    {
+    public function list() {
         // retrieve all records from DB
         $query = "
             SELECT *
@@ -202,7 +177,34 @@ class SongsController extends Controller
         return view('jukebox/songs/html_wrapper', [
             'content' => $list
         ]);
-    
     }
 
+    // DELETE  DATA FROM THE DB
+    public function delete(Request $request)
+        {
+            
+            if($request->has("del")){
+                // // retrieve the record from database
+                $id = $request->input('id');
+                $query = "
+                DELETE
+                FROM `songs`
+                WHERE `id` = ?
+                ";
+                
+                DB::delete($query, [$id]);
+                
+                return redirect('jukebox/songs/list');    
+            }
+            else 
+            {
+                $delete = view("jukebox/songs/delete");
+                return view('jukebox/songs/delete', [
+                    'content' => $delete
+                ]);
+            }
+
+    }
 }
+
+
