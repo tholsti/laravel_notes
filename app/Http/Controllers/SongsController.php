@@ -1,31 +1,34 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+
 use DB;
-use Illuminate\Http\Request;        // to include Request Object -> methods()
 
-
-class NotesController extends Controller
+class SongsController extends Controller
 {
     // CREATE NEW ENTRY TO DB
     public function create()
     {
         // prepare empty ARRAY[] data for EACH NOTE IN THE DB
-        $note = [
-            "title" => null,
-            "author" => null,
-            "topic" => null,
-            "text" => null,
+        $song = [
             "id" => null,
+            "song_title" => null,
+            "artist" => null,
+            "youtube_link" => null,
+            "genre" => null,
+            "date_of_upload" => null,
+            "youtube_url" => null,
+            "youtube_embed" => null,
         ];
 
         // display the 'FROM VIEW' in the 'view' in POSITION [view('url', ['name_to_var' => DB[$row] ])]
-        $form = view('notes/edit', [
-            'note' => $note,
+        $form = view('jukebox/songs/insert', [
+            'song' => $song,
         ]);
 
         // PUT the 'note' [$form] INTO its [DIV][HTML]['url'] name is as 'content'/'header/'footer'
-        return view('notes/html_wrapper', [
+        return view('jukebox/songs/html_wrapper', [
             'content' => $form,     // PUT 'form_view' inside 'content'
         ]);
     }
@@ -44,32 +47,35 @@ class NotesController extends Controller
             // B) GET the QUERY ready to ASSIGN DATA 
             $query = "
                 SELECT *
-                FROM `note`
+                FROM `songs`
                 WHERE `id` = ?
                 LIMIT 1
             ";
             
             //select($q, [$value1, $value2, ...]) SAVE $q IN AN $note[]
-            $notes = DB::select($query, [$id]);
+            $songs = DB::select($query, [$id]);
             // Returned Index[0]    {object} -> [array]
             $note = (array)$notes[0];
 
         } else {
             // B) this is insert
             // prepare empty data
-            $note = [
-                "title" => null,
-                "author" => null,
-                "topic" => null,
-                "text" => null,
+            $ = [
+                "song_title" => null,
+                "artist" => null,
+                "youtube_link" => null,
+                "genre" => null
+                "date_of_upload" => null
+                "youtube_url" => null
+                "youtube_embed" => null
                 "id" => null
             ];
         }
 
         // update the $note[$key]    with what was submitted
-        foreach ($note as $key => $value) { // loop through data in $note
+        foreach ($song as $key => $value) { // loop through data in $note
             if ($request->has($key)) { // if there is something WITH THE SAME $KEY  in $_POST
-                $note[$key] = $request->input($key); // update the data in $note with it
+                $song[$key] = $request->input($key); // update the data in $note with it
             }
         }
 
@@ -78,18 +84,21 @@ class NotesController extends Controller
             // update query
             $query = "
                 UPDATE `note`
-                SET `author' = ?,
-                    `title'  = ?,
-                    `topic' = ?,
-                    `text' = ?
+                SET `song_title' = ?,
+                    `artist'  = ?,
+                    `youtube_link' = ?,
+                    `genre' = ?
+                    `date_of_upload' = ?
+                    `youtube_url' = ?
+                    `youtube_embed' = ?
                 WHERE `id` = ?
             ";
 
             // array_slice(array $arr, int $offset, [int $length=NULL])  (NEGATIVE: starts from end !!!)
             // array_values(array $arr) -> MAKES IT KEYLESS NUMERICAL ARRAY
 
-            $values = array_slice(array_values($note), 1); // all the pieces of $note except for the first ('id')
-            $values[] = $note['id']; // append the id as the last item in $values (it is the last '?')
+            $values = array_slice(array_values($song), 1); // all the pieces of $note except for the first ('id')
+            $values[] = $song['id']; // append the id as the last item in $values (it is the last '?')
             // dd($values);
 
             // update(array $column, $values to INSERT)
@@ -98,24 +107,25 @@ class NotesController extends Controller
             // insert query
             $query = "
                 INSERT
-                INTO `note`
-                (`title`, `topic`, `text`, `author`)
+                INTO `song`
+                (`song_title`, `artist`, `youtube_link`, `genre`,
+                date_of_upload, youtube_url, youtube_embed)
                 VALUES
                 (?, ?, ?, ?)
             ";
-            DB::update($query, array_slice(array_values($note), 1));
+            DB::update($query, array_slice(array_values($song), 1));
 
             $new_inserted_id = DB::getPdo()->lastInsertId();
 
             // update the $note so that it matche the inserted id
-            $note['id'] = $new_inserted_id;
+            $song['id'] = $new_inserted_id;
         }
 
         // inform user (it must survive redirection)
         session()->flash('success_message', 'Success! You have saved it!');
 
         // redirect
-        return redirect('notes/edit?id=' . $note['id']);
+        return redirect('notes/edit?id=' . $song['id']);
     }
 
     // EDIT DATA IN THE DB
@@ -125,20 +135,20 @@ class NotesController extends Controller
         $id = $request->input('id');
         $query = "
             SELECT *
-            FROM `note`
+            FROM `song`
             WHERE `id` = ?
             LIMIT 1
         ";
 
-        $notes = DB::select($query, [$id]);
-        $note = (array)$notes[0];
+        $songs = DB::select($query, [$id]);
+        $song = (array)$songs[0];
 
         // display the form
-        $form = view('notes/edit', [
+        $form = view('jukebox/songs/edit', [
             'note' => $note
         ]);
 
-        return view('notes/html_wrapper', [
+        return view('jukebox/songs/html_wrapper', [
             'content' => $form
         ]);
 

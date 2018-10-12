@@ -12,3 +12,6 @@
 */
 
 Route::get('/notes/create', 'NotesController@create');
+Route::post('/notes/create', 'NotesController@store');
+Route::get('/notes/edit', 'NotesController@edit');
+Route::post('/notes/edit', 'NotesController@store');
