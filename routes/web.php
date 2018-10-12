@@ -18,3 +18,4 @@ Route::get("/notes/edit", "NotesController@edit");
 Route::post("/notes/edit", "NotesController@store");
 
 Route::get("/jukebox/songs/insert", "SongsController@create");
+Route::post("/jukebox/songs/insert", "SongsController@create");

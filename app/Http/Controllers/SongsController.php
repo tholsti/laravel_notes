@@ -55,7 +55,7 @@ class SongsController extends Controller
             //select($q, [$value1, $value2, ...]) SAVE $q IN AN $note[]
             $songs = DB::select($query, [$id]);
             // Returned Index[0]    {object} -> [array]
-            $note = (array)$notes[0];
+            $song = (array)$songs[0];
 
         } else {
             // B) this is insert
@@ -83,7 +83,7 @@ class SongsController extends Controller
         if ($request->input('id')) {
             // update query
             $query = "
-                UPDATE `ongs`
+                UPDATE `song`
                 SET `song_title' = ?,
                     `artist'  = ?,
                     `youtube_link' = ?,
