@@ -7,7 +7,7 @@
 
 </head>
 <body>
-    <h1>Admin view: modify Youtube jukebox</h1>
+    
     <?= $content ?>
 
 </body>

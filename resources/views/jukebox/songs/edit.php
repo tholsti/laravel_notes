@@ -2,7 +2,8 @@
 
     <?= csrf_field() ?>
 
-    <h1>Admin view: insert new song into Youtube jukebox</h1>
+    <h1>Admin view: modify existing song in the Youtube jukebox</h1>
+
 
     <label for="song_title">Song Title</label><br>
     <input type="text" name="song_title" id="song_title" value="<?= htmlspecialchars($song['song_title']) ?>">

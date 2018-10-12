@@ -24,12 +24,12 @@ class SongsController extends Controller
 
         // display the 'FROM VIEW' in the 'view' in POSITION [view('url', ['name_to_var' => DB[$row] ])]
         $form = view('jukebox/songs/insert', [
-            'song' => $song,
+            'song' => $song
         ]);
 
         // PUT the 'note' [$form] INTO its [DIV][HTML]['url'] name is as 'content'/'header/'footer'
         return view('jukebox/songs/html_wrapper', [
-            'content' => $form,     // PUT 'form_view' inside 'content'
+            'content' => $form     // PUT 'form_view' inside 'content'
         ]);
     }
 
@@ -60,7 +60,8 @@ class SongsController extends Controller
         } else {
             // B) this is insert
             // prepare empty data
-            $query = [
+            $song = [
+                "id" => null,
                 "song_title" => null,
                 "artist" => null,
                 "youtube_link" => null,
@@ -68,34 +69,35 @@ class SongsController extends Controller
                 "date_of_upload" => null,
                 "youtube_url" => null,
                 "youtube_embed" => null,
-                "id" => null
             ];
         }
 
-        // update the $note[$key]    with what was submitted
+        // update the $song[$key]    with what was submitted
         foreach ($song as $key => $value) { // loop through data in $note
             if ($request->has($key)) { // if there is something WITH THE SAME $KEY  in $_POST
                 $song[$key] = $request->input($key); // update the data in $note with it
             }
         }
+        
+        $song["youtube_url"] = 'http://www.youtube.com/watch?v=' . $song["youtube_link"];
+        
+        $song["youtube_embed"] = '<iframe width="560" height="315" src="https://www.youtube.com/embed/' . $song["youtube_link"] . '" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>"';
 
         // save THE data if (TRUE)
         if ($request->input('id')) {
             // update query
             $query = "
-                UPDATE `song`
-                SET `song_title' = ?,
-                    `artist'  = ?,
-                    `youtube_link' = ?,
-                    `genre' = ?,
-                    `date_of_upload' = ?,
-                    `youtube_url' = ?,
-                    `youtube_embed' = ?
+                UPDATE `songs`
+                SET `song_title` = ?,
+                    `artist`  = ?,
+                    `youtube_link` = ?,
+                    `genre` = ?,
+                    `date_of_upload` = ?,
+                    `youtube_url` = ?,
+                    `youtube_embed` = ?
                 WHERE `id` = ?
             ";
-
-            // array_slice(array $arr, int $offset, [int $length=NULL])  (NEGATIVE: starts from end !!!)
-            // array_values(array $arr) -> MAKES IT KEYLESS NUMERICAL ARRAY
+            
 
             $values = array_slice(array_values($song), 1); // all the pieces of $note except for the first ('id')
             $values[] = $song['id']; // append the id as the last item in $values (it is the last '?')
@@ -107,11 +109,10 @@ class SongsController extends Controller
             // insert query
             $query = "
                 INSERT
-                INTO `song`
-                (`song_title`, `artist`, `youtube_link`, `genre`,
-                date_of_upload, youtube_url, youtube_embed)
+                INTO `songs`
+                (`song_title`, `artist`, `youtube_link`, `genre`, `date_of_upload`, `youtube_url`, `youtube_embed`)
                 VALUES
-                (?, ?, ?, ?)
+                (?, ?, ?, ?, ?, ?, ?)
             ";
             DB::update($query, array_slice(array_values($song), 1));
 
@@ -125,7 +126,7 @@ class SongsController extends Controller
         session()->flash('success_message', 'Success! You have saved it!');
 
         // redirect
-        return redirect('notes/edit?id=' . $song['id']);
+        return redirect('jukebox/songs/edit?id=' . $song['id']);
     }
 
     // EDIT DATA IN THE DB
@@ -135,7 +136,7 @@ class SongsController extends Controller
         $id = $request->input('id');
         $query = "
             SELECT *
-            FROM `song`
+            FROM `songs`
             WHERE `id` = ?
             LIMIT 1
         ";
@@ -145,7 +146,7 @@ class SongsController extends Controller
 
         // display the form
         $form = view('jukebox/songs/edit', [
-            'note' => $note
+            'song' => $song
         ]);
 
         return view('jukebox/songs/html_wrapper', [
